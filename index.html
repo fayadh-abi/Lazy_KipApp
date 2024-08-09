@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <!-- font-awesome@6.2.0 icon Visit -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <style>
+    h5 {
+  text-align: center;
+}
+    body {
+      background-color: #152733;
+      color: #fff;
+      
+      
+    }
+    #drop_zone {
+      border: 2px dashed #ccc;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      font: 20pt bold 'Vollkorn';
+      color: #ccc;
+      margin-bottom: 20px;
+      background-color: #0e324b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-list {
+      list-style: none;
+      padding: 0;
+    }
+    .file-list li {
+      margin: 5px 0;
+    }
+    .form-control {
+      background-color: #0e324b;
+      color: #fff;
+      border: 1px solid #ccc;
+    }
+    .form-control:focus {
+      border-color: #fff;
+      box-shadow: none;
+    }
+    .modal-content {
+      color: #000; /* Warna teks modal */
+    }
+    .container-box {
+      border: 1px solid #ccc; /* Border untuk container */
+      border-radius: 10px; /* Optional: untuk border yang melengkung */
+      padding: 20px; /* Padding di dalam container */
+      background-color: #081e2c; /* Background color untuk container */
+      max-width: 600px; /* Maksimal lebar untuk container */
+      margin: auto; /* Center the container */
+    }
+    .fa-images {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+     h3, p {
+      text-align: center;
+    }
+    .custom-img {
+      width: 200px; /* Lebar gambar */
+      height: 100px; /* Tinggi gambar */
+      object-fit: cover; /* Untuk memastikan gambar memenuhi kotak tanpa terdistorsi */
+      //border: 2px solid #ccc; /* Optional: border untuk gambar */
+      margin: 10px auto; /* Menengahkan gambar */
+      display: block; /* Membuat gambar menjadi blok */
+    }
+  </style>
+</head>
+<body>
+  <!-- Modal untuk Spinner -->
+  <div class="modal fade" id="spinnerModal" tabindex="-1" role="dialog" aria-labelledby="spinnerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <p class="mt-2">Proses upload bukti dukung, tunggu sebentar yaa ...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5 container-box">
+    <img src="https://i.imgur.com/baGVtYU.png" alt="Your Image" class="custom-img mx-auto">
+      <h5><i>Simplifying the KipApp for Deadliners..</i></h5>
+      <p>Fayadh©2024</p>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form id="myForm">
+          <div class="form-group">
+            <label for="proyek">Pilih Proyek : </label>
+            <select class="form-control" id="proyek" name="proyek" required>
+            <option selected disabled value="">Pilih proyek</option>
+            <?!=proyek?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bulan">Bulan : </label>
+            <select class="form-control" id="bulan" name="bulan" required>
+            <option selected disabled value="">Pilih bulan</option>
+            <?!=bulan?>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6 ">
+              <label for="awal">Periode Awal :</label>
+              <input type="date" class="form-control" id="awal" name="awal" required>
+            </div>
+            <div class="form-group col-md-6 ">
+              <label for="akhir">Periode Akhir : </label>
+              <input type="date" class="form-control" id="akhir" name="akhir" required>
+            </div>
+          </div>
+          <div class="form-group">
+              <label for="kegiatan" class="form-label">Kegiatan :</label>
+              <textarea class="form-control" id="kegiatan" name="kegiatan" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="file">Upload Bukti dukung : [*PDF]</label>
+            <div id="drop_zone" class="border">
+              <i class="fas fa-images"></i>
+              Drop files here or click to upload
+            </div>
+            <input type="file" id="file" name="file" multiple style="display: none;" required>
+            <ul id="file_list" class="file-list mt-3"></ul>
+          </div>
+          <button type="button" class="btn btn-info btn-lg btn-block" onclick="handleFileUpload()">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal untuk Sukses -->
+  <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Yeay, berhasil!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Kegiatan dan Bukti dukung berhasil disimpan!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('drop_zone');
+    const fileInput = document.getElementById('file');
+    const fileList = document.getElementById('file_list');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      fileInput.files = e.dataTransfer.files;
+      updateFileList(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      updateFileList(e.target.files);
+    });
+
+    function updateFileList(files) {
+      fileList.innerHTML = '';
+      Array.from(files).forEach(file => {
+        const li = document.createElement('li');
+        li.textContent = file.name;
+        fileList.appendChild(li);
+      });
+    }
+
+    function handleFileUpload() {
+      const proyek = document.getElementById('proyek').value;
+      const bulan = document.getElementById('bulan').value;
+      const awal = document.getElementById('awal').value;
+      const akhir = document.getElementById('akhir').value;
+      const kegiatan = document.getElementById('kegiatan').value;
+      const files = fileInput.files;
+
+      if (!proyek || !bulan || !awal || !akhir || !kegiatan) {
+        showAlert('Semua isian harus diisi.');
+        return;
+      }
+
+      if (files.length === 0) {
+        showAlert('Please select or drop files to upload.');
+        return;
+      }
+
+      $('#spinnerModal').modal('show'); // Tampilkan modal spinner
+
+      let fileData = []; // Menyimpan data file dan nama file
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64Data = e.target.result.split(',')[1];
+          const fileName = file.name; // Ambil nama file
+
+          fileData.push({ name: fileName, data: base64Data });
+
+          // Jika semua file sudah terunggah
+          if (fileData.length === files.length) {
+            submitForm(proyek ,bulan, awal, akhir, kegiatan, fileData); // Kirim data form beserta file ke server
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function submitForm(proyek ,bulan, awal, akhir, kegiatan, fileData) {
+      const formData = {
+        proyek: proyek,
+        bulan: bulan,
+        awal : awal,
+        akhir : akhir,
+        kegiatan : kegiatan,
+        fileData: fileData
+      };
+//
+      google.script.run.withSuccessHandler(function() {
+        $('#spinnerModal').modal('hide'); // Sembunyikan modal spinner setelah selesai
+        $('#successModal').modal('show'); // Tampilkan modal sukses
+        document.getElementById('myForm').reset(); // Reset form
+        fileList.innerHTML = ''; // Kosongkan daftar file
+      }).submitData(formData);
+    }
+
+    function showAlert(message) {
+      $('#alertModal .modal-body').text(message);
+      $('#alertModal').modal('show');
+    }
+  </script>
+
+  <!-- JavaScript untuk Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Modal untuk Alert -->
+  <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="alertModalLabel">Peringatan!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Pesan alert akan ditampilkan di sini -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
