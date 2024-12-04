@@ -13,7 +13,7 @@ function include(filename) {
 }
 
 function uploadFileToDrive(name, mimeType, bytes, folderName) {
-  var parentFolderId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Ganti dengan ID folder Google Drive induk
+  var parentFolderId = 'xxxxxxxxxxxxxxxxxxxxxx'; // Ganti dengan ID folder Google Drive induk
   var parentFolder = DriveApp.getFolderById(parentFolderId);
   
   // Cek apakah folder dengan nama tersebut sudah ada
@@ -36,12 +36,13 @@ function uploadFileToDrive(name, mimeType, bytes, folderName) {
 }
 
 function submitData(formData) {
-  const sheet = SpreadsheetApp.openById('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx').getSheetByName('Data'); // Ganti dengan ID Spreadsheet
+  const sheet = SpreadsheetApp.openById('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx').getSheetByName('Data'); // Ganti dengan ID Spreadsheet
   
   formData.fileData.forEach(file => {
     const folderName = formData.bulan; // Gunakan nama input sebagai nama folder
-    const url = uploadFileToDrive(file.name, 'application/pdf',file.data, folderName); // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-    sheet.appendRow([formData.proyek, formData.bulan, formData.awal, formData.akhir,formData.kegiatan ,file.name, url]);
+    const url = uploadFileToDrive(file.name, 'application/pdf',file.data, folderName);
+    sheet.appendRow([formData.proyek, formData.bulan, formData.awal, formData.akhir,formData.kegiatan,
+    formData.capaian, formData.satuan ,file.name, url]);
   });
 }
 
@@ -68,3 +69,16 @@ function getBulan(){
 }
 
 let bulan = getBulan().map(d=> "<option>"+ d + "</option>").join();
+
+
+// Tambahkan dropdown satuan
+function getSatuan(){
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName("Satuan")
+  let data = sheet.getRange('A2:A').getValues().filter(d => d[0] !== "");
+
+  let newArr = data.map(d => d[0]);
+  return(newArr);
+}
+
+let satuan = getSatuan().map(d=> "<option>"+ d + "</option>").join();
