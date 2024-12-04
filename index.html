@@ -125,6 +125,19 @@
               <label for="kegiatan" class="form-label">Kegiatan :</label>
               <textarea class="form-control" id="kegiatan" name="kegiatan" rows="3" required></textarea>
           </div>
+          <div class="form-row">
+            <div class="form-group col-md-6 ">
+              <label for="capaian">Capaian :</label>
+              <textarea class="form-control" id="capaian" name="capaian" rows="1"></textarea>
+            </div>
+            <div class="form-group col-md-6 ">
+              <label for="satuan">Satuan : </label>
+              <select class="form-control" id="satuan" name="satuan" required>
+                <option selected disabled value="">Pilih satuan</option>
+                <?!=satuan?>
+              </select>
+            </div>
+          </div>
           <div class="form-group">
             <label for="file">Upload Bukti dukung : [*PDF]</label>
             <div id="drop_zone" class="border">
@@ -199,9 +212,11 @@
       const awal = document.getElementById('awal').value;
       const akhir = document.getElementById('akhir').value;
       const kegiatan = document.getElementById('kegiatan').value;
+      const capaian = document.getElementById('capaian').value;
+      const satuan = document.getElementById('satuan').value;
       const files = fileInput.files;
 
-      if (!proyek || !bulan || !awal || !akhir || !kegiatan) {
+      if (!proyek || !bulan || !awal || !akhir || !kegiatan || !capaian || !satuan ) {
         showAlert('Semua isian harus diisi.');
         return;
       }
@@ -225,20 +240,22 @@
 
           // Jika semua file sudah terunggah
           if (fileData.length === files.length) {
-            submitForm(proyek ,bulan, awal, akhir, kegiatan, fileData); // Kirim data form beserta file ke server
+            submitForm(proyek ,bulan, awal, akhir, kegiatan, capaian, satuan, fileData); // Kirim data form beserta file ke server
           }
         };
         reader.readAsDataURL(file);
       });
     }
 
-    function submitForm(proyek ,bulan, awal, akhir, kegiatan, fileData) {
+    function submitForm(proyek ,bulan, awal, akhir, kegiatan, capaian, satuan, fileData) {
       const formData = {
         proyek: proyek,
         bulan: bulan,
         awal : awal,
         akhir : akhir,
         kegiatan : kegiatan,
+        capaian : capaian,
+        satuan : satuan,
         fileData: fileData
       };
 //
